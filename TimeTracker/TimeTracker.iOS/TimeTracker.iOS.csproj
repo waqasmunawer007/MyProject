@@ -158,4 +158,7 @@
       <Name>TimeTracker</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\TimeTracker.png" />
+  </ItemGroup>
 </Project>
