@@ -1,4 +1,6 @@
+using DLToolkit.Forms.Controls;
 using System;
+using TimeTracker.Database;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -10,8 +12,9 @@ namespace TimeTracker
         public App()
         {
             InitializeComponent();
-
-            MainPage = new MainPage();
+            FlowListView.Init();
+            DatabaseHelper.GetInstance().CreateDatabase();
+            MainPage = new NavigationPage(new MainPage());
         }
 
         protected override void OnStart()

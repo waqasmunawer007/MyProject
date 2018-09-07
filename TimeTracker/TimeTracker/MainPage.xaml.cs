@@ -7,11 +7,12 @@ using Xamarin.Forms;
 
 namespace TimeTracker
 {
-    public partial class MainPage : ContentPage
+    public partial class MainPage : TabbedPage
     {
         public MainPage()
         {
             InitializeComponent();
+            NavigationPage.SetHasNavigationBar(this, false);  // Hide nav bar
         }
     }
 }

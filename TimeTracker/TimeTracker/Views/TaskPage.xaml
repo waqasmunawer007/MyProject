@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Tasks"
+             Icon="ic_list_black_24dp.png"
+             xmlns:convertor="clr-namespace:TimeTracker.Convertors"
+             xmlns:flv="clr-namespace:DLToolkit.Forms.Controls;assembly=DLToolkit.Forms.Controls.FlowListView"
+             x:Class="TimeTracker.Views.TaskPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <convertor:HideShowEditOptionConvertor x:Key="hideShowEditOptionConvertor"></convertor:HideShowEditOptionConvertor>
+            <convertor:HighlightCellConvertor x:Key="cellHeightConvertor"></convertor:HighlightCellConvertor>
+            <convertor:HeaderBGColorConvertor x:Key="headerBGColorConvertor"></convertor:HeaderBGColorConvertor>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <flv:FlowListView 
+              x:Name="flowListView"
+              FlowColumnCount="3"
+              SeparatorVisibility="None"
+              RowHeight="100"
+              FlowUseAbsoluteLayoutInternally="false" 
+              FlowColumnExpand="None"
+              BackgroundColor="White"
+              FlowItemTappedCommand="{Binding ItemTapCommand}"
+              IsGroupingEnabled="true" 
+              FlowGroupDisplayBinding="{Binding Path=Key}"
+              FlowItemsSource="{Binding Items}">
+            <flv:FlowListView.GroupHeaderTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout 
+                            HeightRequest="100" 
+                            BackgroundColor="{Binding Path=Key,Converter={StaticResource headerBGColorConvertor}}" 
+                            HorizontalOptions="FillAndExpand"
+                            VerticalOptions="FillAndExpand">
+                            <Frame 
+                                HeightRequest="98" 
+                                HasShadow="false" 
+                                BackgroundColor="Transparent"
+                                HorizontalOptions="FillAndExpand" 
+                                VerticalOptions="FillAndExpand" 
+                                CornerRadius="1"  >
+                                <!--header title-->
+                                <Label
+                                BackgroundColor="Transparent"
+                                FontSize="20" 
+                                FontAttributes="Bold"  
+                                TextColor="White"
+                                VerticalOptions="CenterAndExpand" 
+                                HorizontalOptions="CenterAndExpand" 
+                                Text="{Binding Path=Key}"></Label>
+                            </Frame>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </flv:FlowListView.GroupHeaderTemplate>
+            <flv:FlowListView.FlowColumnTemplate>
+                <DataTemplate>
+                    <Grid Padding="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label 
+                              IsVisible="false" 
+                              Text="{Binding TaskType}"
+                              x:Name="HackLabel" 
+                              HorizontalOptions="Fill"
+                              VerticalOptions="CenterAndExpand"/>
+                        <AbsoluteLayout 
+                             VerticalOptions="FillAndExpand" 
+                             HorizontalOptions="Fill"
+                             x:Name="TaskItem"
+                             BackgroundColor="{Binding IsSelected,Converter={StaticResource cellHeightConvertor },ConverterParameter={x:Reference Name=HackLabel}}">
+                            <!--task title-->
+                            <Label 
+                                HorizontalOptions="Fill"
+                                VerticalOptions="CenterAndExpand"
+                                AbsoluteLayout.LayoutFlags="XProportional,YProportional,WidthProportional"
+                                AbsoluteLayout.LayoutBounds=".5,.5,1,100"
+                                VerticalTextAlignment="Center" 
+                                HorizontalTextAlignment="Center"
+                                LineBreakMode="WordWrap"
+                                TextColor="White"
+                                FontSize="Medium"  
+                                Text="{Binding Title}"
+                                BackgroundColor="Transparent"/>
+                            <!--Edit button image-->
+                            <Image 
+                                 Source="icon_edit" 
+                                 IsVisible="{Binding Title,Converter={StaticResource hideShowEditOptionConvertor}}"
+                                 ClassId="{Binding TaskTrackId}"
+                                 AbsoluteLayout.LayoutBounds="1,0,30,30"
+                                 Margin="0,10,10,0"
+                                 AbsoluteLayout.LayoutFlags="PositionProportional">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer  
+                                        Tapped="EditGestureRecognizer_Tapped">
+                                    </TapGestureRecognizer>
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </AbsoluteLayout>
+                    </Grid>
+                </DataTemplate>
+            </flv:FlowListView.FlowColumnTemplate>
+        </flv:FlowListView>
+    </ContentPage.Content>
+</ContentPage>
