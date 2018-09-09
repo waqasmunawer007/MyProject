@@ -41,7 +41,7 @@ namespace TimeTracker.Database
             try
             {
                 database.CreateTable<Taskk>();
-               // database.Query<DayTask>("CREATE TABLE if not exists `DayTask` (`Id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,`DayTaskTrackId` TEXT,`TaskTitle` TEXT,`TaskType`    TEXT,`TaskStartedAt` TEXT,`SpentTime` TEXT,`CreatedAt` TEXT,`UpdatedAt` TEXT,`BGColor` TEXT,`IsSelected` INTEGER,`RefTaskTrackId` TEXT);");
+               // database.Query<DayActivity>("CREATE TABLE if not exists `DayActivity` (`Id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,`DayActivityTrackId` TEXT,`TaskTitle` TEXT,`TaskType`    TEXT,`TaskStartedAt` TEXT,`SpentTime` TEXT,`CreatedAt` TEXT,`UpdatedAt` TEXT,`BGColor` TEXT,`IsSelected` INTEGER,`RefTaskTrackId` TEXT);");
                 DumpInitialDataInTaskkLocalDB();
             }
             catch (Exception ex)

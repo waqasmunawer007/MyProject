@@ -142,7 +142,34 @@ namespace TimeTracker.ViewModels
         /// /// </summary>
         public void HighlightSelectedTask()
         {
-            //todo
+            try
+            {
+
+                Grouping<string, Taskk> item = (Grouping<string, Taskk>)Items[0];
+                for (int j = 0; j < item.Count; j++)
+                {
+                    item[j].IsSelected = false;
+                }
+                item = (Grouping<string, Taskk>)Items[1];
+                for (int j = 0; j < item.Count; j++)
+                {
+                    item[j].IsSelected = false;
+
+                }
+                item = (Grouping<string, Taskk>)Items[2];
+                for (int j = 0; j < item.Count; j++)
+                {
+                    item[j].IsSelected = false;
+
+                }
+                currentSelectedTask.IsSelected = true;
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send((App)Xamarin.Forms.Application.Current, AppConstant.ErrorEvent, ex.ToString());
+            }
+
         }
+    
     }
 }

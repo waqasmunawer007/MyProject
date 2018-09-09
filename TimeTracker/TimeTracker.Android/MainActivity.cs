@@ -18,8 +18,9 @@ namespace TimeTracker.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(bundle);
-
+            XamForms.Controls.Droid.Calendar.Init();
             global::Xamarin.Forms.Forms.Init(this, bundle);
+            Rg.Plugins.Popup.Popup.Init(this, bundle);
             LoadApplication(new App());
         }
     }

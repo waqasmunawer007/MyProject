@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+             xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+             xmlns:local="clr-namespace:TimeTracker.Rendereres;assembly=TimeTracker"
+             HasSystemPadding="True"
+             xmlns:converters="clr-namespace:TimeTracker.Convertors"  
+             x:Class="TimeTracker.Views.AddEditTaskkPopupPage">
+    <!--popup page animation-->
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation
+          PositionIn="Left"
+          PositionOut="Right"
+          ScaleIn="1"
+          ScaleOut="0.7"
+          DurationIn="700"
+          EasingIn="BounceOut"/>
+    </pages:PopupPage.Animation>
+    <pages:PopupPage.Resources>
+        <ResourceDictionary>
+            <converters:MultiTriggerConverter x:Key="dataHasBeenEnterdConverter"></converters:MultiTriggerConverter>
+        </ResourceDictionary>
+    </pages:PopupPage.Resources>
+    <ScrollView
+         HorizontalOptions="Center"
+         VerticalOptions="Center">
+        <AbsoluteLayout>
+            <Frame   
+               Margin="30"
+               HorizontalOptions="Center"
+               BackgroundColor="White">
+                <StackLayout WidthRequest="250" HeightRequest="150">
+                    <!--Task title-->
+                    <local:CustomEntry
+                        Margin="0,0,0,0"
+                        HorizontalOptions="FillAndExpand"
+                        HeightRequest="40"
+                        x:Name="taskName"    
+                        Text="{Binding  Task.Title}"
+                        Placeholder="Task Name"></local:CustomEntry>
+                    <!--save task button-->
+                    <Button  
+                        HeightRequest="50"
+                        Text="Save"
+                        IsEnabled="False"   
+                        BorderRadius="5"
+                        Clicked="Save_Clicked"
+                        HorizontalOptions="FillAndExpand">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button"
+                                Binding="{Binding Source={x:Reference taskName},
+                                Path=Text.Length,
+                                Converter={StaticResource dataHasBeenEnterdConverter}}"
+                                Value="true">
+                                <Setter Property="IsEnabled" Value="True" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+
+                </StackLayout>
+            </Frame>
+
+            <!--View hold the cancel image-->
+            <ContentView
+                  AbsoluteLayout.LayoutFlags="PositionProportional"
+                  AbsoluteLayout.LayoutBounds="1, 0, -1, -1">
+                <ContentView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnCloseButton_Tapped"/>
+                </ContentView.GestureRecognizers>
+                <!--cancel image-->
+                <Image
+                    x:Name="CloseImage"
+                    HeightRequest="30"
+                    WidthRequest="30">
+                    <Image.Source>
+                        <OnPlatform
+                            x:TypeArguments="ImageSource"
+                            Android="ic_cancel_96.png" 
+                            iOS="ic_cancel_96.png"/>
+                    </Image.Source>
+                </Image>
+            </ContentView>
+        </AbsoluteLayout>
+    </ScrollView>
+
+</pages:PopupPage>

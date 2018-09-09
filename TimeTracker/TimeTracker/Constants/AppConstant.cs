@@ -66,11 +66,11 @@ namespace TimeTracker.Constants
         public static string MiscellaneousChartTitle = "Miscellaneous";
         //TaskType Colors
         public static string ProductiveTaskColor = "#5c6bc0";
-        public static string ProductiveSelectiveTaskColor = "#b0fc0e";
+        public static string ProductiveSelectiveTaskColor = "#7986cb";
         public static string UnProductiveTaskColor = "#ef5350";
         public static string UnProductiveSelectiveTaskColor = "#990d1b";
         public static string MiscellaneousTaskColor = "#9e9e9e"; //like gray
-        public static string MiscellaneousSelectiveTaskColor = "#9e9e9e";// like dim gray
+        public static string MiscellaneousSelectiveTaskColor = "#7986cb";// like dim gray
         public static string MonthlyChartLable = "Monthly Progress";
         public static string WeekelyChartLable = "Weekely Progress";
         public static string DailyChartLable = "Day Progress";

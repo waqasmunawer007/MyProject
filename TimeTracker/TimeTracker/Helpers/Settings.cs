@@ -26,7 +26,7 @@ namespace TimeTracker.Helpers
         private static readonly bool IsDumpInitialTaskInSqliteDefault = false;
         private const string RunningTaskIdKey = "running_task_id";
         private const string RecentAddedTaskFromStatIdKey = "stat_running_task_id";
-        private const string LatestInsertedDayTaskKey = "latest_inserted_day_task_track_id";
+        private const string LatestInsertedDayActivityKey = "latest_inserted_day_task_track_id";
         private const string IsDumpInitialTaskInSqliteKey = "is_initial_task_dumped_local_db";
        #endregion
         public static string GeneralSettings
@@ -73,15 +73,15 @@ namespace TimeTracker.Helpers
                 AppSettings.AddOrUpdateValue(IsDumpInitialTaskInSqliteKey, value);
             }
         }
-        public static string LatestInsertedDayTaskTrackId
+        public static string LatestInsertedDayActivityTrackId
         {
             get
             {
-                return AppSettings.GetValueOrDefault(LatestInsertedDayTaskKey, null);
+                return AppSettings.GetValueOrDefault(LatestInsertedDayActivityKey, null);
             }
             set
             {
-                AppSettings.AddOrUpdateValue(LatestInsertedDayTaskKey, value);
+                AppSettings.AddOrUpdateValue(LatestInsertedDayActivityKey, value);
             }
         }
     }

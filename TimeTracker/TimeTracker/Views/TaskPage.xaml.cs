@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rg.Plugins.Popup.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,11 +29,10 @@ namespace TimeTracker.Views
             taskViewModel.OpenAddTaskPopupViewHandler += ShowAddTaskPopUpAsync; //handler to open the add task popup page
             taskViewModel.OpenCalenderForStatsHandler += ShowCalenderPage;
         }
-        private async void ShowCalenderPage(object sender, EventArgs e)
+        private void ShowCalenderPage(object sender, EventArgs e)
         {
             var selectedTask = (Taskk)sender;
-            await DisplayAlert("", "I am click", "OK");
-            // Navigation.PushAsync(new CalenderPageView(selectedTask));
+             Navigation.PushAsync(new CreateActivityCalenderPageView(selectedTask));
         }
         /// <summary>
         /// open the popup page to add new task
@@ -43,8 +43,7 @@ namespace TimeTracker.Views
         private async void ShowAddTaskPopUpAsync(object sender, EventArgs e)
         {
             Taskk selectedTask = sender as Taskk;
-             await  DisplayAlert("", "I am click", "OK");
-            //await Navigation.PushPopupAsync(new AddAndEditTasksPopUpViewPage(selectedTask.TaskTrackId));
+            await Navigation.PushPopupAsync(new AddEditTaskkPopupPage(selectedTask.TaskTrackId));
         }
         /// <summary>
         /// Edit task button handler
@@ -55,17 +54,37 @@ namespace TimeTracker.Views
         private async void EditGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             var selectedItemTrackId = ((Image)sender).ClassId.ToString();
-            await DisplayAlert("", "I am click", "OK");
-           // await Navigation.PushPopupAsync(new AddAndEditTasksPopUpViewPage(selectedItemTrackId, true));
+           await Navigation.PushPopupAsync(new AddEditTaskkPopupPage(selectedItemTrackId, true));
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            MessagingCenter.Subscribe<AddEditTaskkPopUpViewModel, bool>(this, "UpdateTask", (sender, arg) =>
+            {
+                taskViewModel.SortedAndSetTheTaskList();
+                taskViewModel.HighlightTaskAfterNewTaskInserted();
+
+            });
+            MessagingCenter.Subscribe<AddEditTaskkPopUpViewModel, bool>(this, "InsertedTask", (sender, arg) =>
+            {
+
+                taskViewModel.SortedAndSetTheTaskList();
+                taskViewModel.HighlightTaskAfterNewTaskInserted();
+
+            });
+            MessagingCenter.Subscribe<AddEditTaskkPopUpViewModel, bool>(this, "Can'tInserTask", (sender, arg) =>
+            {
+                //todo
+
+            });
         }
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
+            MessagingCenter.Unsubscribe<AddEditTaskkPopUpViewModel, bool>(this, "UpdateTask");
+            MessagingCenter.Unsubscribe<AddEditTaskkPopUpViewModel, bool>(this, "InsertedTask");
+            MessagingCenter.Unsubscribe<AddEditTaskkPopUpViewModel, bool>(this, "Can'tInserTask");
         }
 
     }
