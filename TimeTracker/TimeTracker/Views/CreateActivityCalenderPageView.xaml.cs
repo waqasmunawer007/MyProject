@@ -14,6 +14,7 @@ namespace TimeTracker.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CreateActivityCalenderPageView : ContentPage
     {
+        DayActivityViewModel dayActivityViewModel;
         public CreateActivityCalenderPageView(Taskk selectedTask)
         {
             InitializeComponent();
@@ -22,7 +23,7 @@ namespace TimeTracker.Views
                 calender.MaxDate = DateTime.Now.AddDays(0);
                 calender.MinDate = DateTime.Now.AddDays(-1);
                 calender.Padding = new Thickness(5, Device.RuntimePlatform == Device.iOS ? 25 : 5, 5, 5);
-                DayActivityViewModel dayActivityViewModel= new DayActivityViewModel();
+               dayActivityViewModel= new DayActivityViewModel();
                 BindingContext = dayActivityViewModel;
                 dayActivityViewModel.CurrentSelectedTaskk = selectedTask;
                 dayActivityViewModel.OpenTaskStatsViewPageHandler += OpenTaskStatsViewPage;
@@ -37,14 +38,13 @@ namespace TimeTracker.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void OpenTaskStatsViewPage(object sender, EventArgs e)
+        private void OpenTaskStatsViewPage(object sender, EventArgs e)
         {
             string d = sender as string;
             if (d != null)
             {
-                await DisplayAlert("Current date", "" + d, "cancel");
-                //  Navigation.PushAsync(new DayActivitysPageView(d));
-                // Navigation.RemovePage(this);
+                Navigation.PushAsync(new DaytasksPageView(d));
+                Navigation.RemovePage(this);
             }
         }
         private async void calender_DateClicked(object sender, XamForms.Controls.DateTimeEventArgs e)

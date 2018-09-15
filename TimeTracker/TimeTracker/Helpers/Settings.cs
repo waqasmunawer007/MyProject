@@ -73,7 +73,7 @@ namespace TimeTracker.Helpers
                 AppSettings.AddOrUpdateValue(IsDumpInitialTaskInSqliteKey, value);
             }
         }
-        public static string LatestInsertedDayActivityTrackId
+        public static string LatestInsertedDayTaskTrackId
         {
             get
             {

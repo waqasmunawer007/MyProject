@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using CarouselView.FormsPlugin.iOS;
 using Foundation;
 using UIKit;
 
@@ -25,6 +25,7 @@ namespace TimeTracker.iOS
             global::Xamarin.Forms.Forms.Init();
             XamForms.Controls.iOS.Calendar.Init();
             Rg.Plugins.Popup.Popup.Init();
+            CarouselViewRenderer.Init();
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);

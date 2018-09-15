@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+              xmlns:local="clr-namespace:TimeTracker.Convertors" 
+              xmlns:ui_constants="clr-namespace:TimeTracker.Constants"
+             BackgroundColor="{StaticResource NormalTextColor}"
+             Title="Stats"
+             xmlns:cv="clr-namespace:CarouselView.FormsPlugin.Abstractions;assembly=CarouselView.FormsPlugin.Abstractions"
+             x:Class="TimeTracker.Views.DaytasksPageView">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="LableTextColor">White</Color>
+            <local:TaskHighlighterConverter x:Key="TaskHighlighterConverter"></local:TaskHighlighterConverter>
+            <local:TextVisibiltyConverter  x:Key="TimeSpendVisibiltyConverter" ></local:TextVisibiltyConverter>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem  Text="{x:Static ui_constants:AppConstant.StatsToolbarAddNewTaskButton}" x:Name="addToolbarItem" Order="Primary" Activated="AddToolbarItem_Activated"></ToolbarItem>
+        <ToolbarItem Text="{x:Static ui_constants:AppConstant.StatsToolbargraphsButton}" Order="Primary" Activated="GraphsToolbarItem_Activated"></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <cv:CarouselViewControl 
+            x:Name="carousel"
+            ItemsSource="{Binding TaskForDayList}"
+            ShowArrows="true"
+            ArrowsTransparency="1"
+            ArrowsTintColor="Black"
+            ArrowsBackgroundColor="Transparent"    
+            BackgroundColor="White"
+            InterPageSpacing="20"
+            PositionSelected="Handle_PositionSelected"
+            Scrolled="Handle_Scrolled"
+            Orientation="Horizontal">
+            <cv:CarouselViewControl.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill"
+                        BackgroundColor="{StaticResource NormalTextColor}"
+                        Orientation="Vertical">
+                        <!--Day and month lable-->
+                        <Button
+                             BorderColor="{StaticResource ViewsBoarderColor}" 
+                             BorderWidth="2" 
+                             TextColor="{StaticResource TaskListBgColor}" 
+                             HeightRequest="40" 
+                             Margin="0,2,0,2"
+                             x:Name="DayAndMonth_Show"
+                             HorizontalOptions="Fill"
+                             Text="{Binding MonthAndDate}"  
+                             BackgroundColor="#f5f5f5"/>
+                        <!--day task list-->
+                        <!--IsEnabled="{Binding IsEnableCell}"-->
+                        <ListView 
+                            Margin="0,0,0,0"
+                            x:Name="DayTaskList"
+                            HasUnevenRows="True"
+                            SeparatorVisibility="None"
+                            IsVisible="{Binding IsShowList}"
+                            HorizontalOptions="FillAndExpand" 
+                            VerticalOptions="FillAndExpand"
+                            ItemSelected="DayTaskList_ItemSelected"
+                            BackgroundColor="{StaticResource NormalTextColor}"
+                            SeparatorColor="{StaticResource ViewsBoarderColor}"
+                            ItemsSource="{Binding ModelTaskForDayList}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell >
+                                        <StackLayout 
+                                            Orientation="Vertical" 
+                                            HorizontalOptions="Fill" 
+                                            BackgroundColor="{Binding BGColor}"
+                                            Margin="0,0,0,5"
+                                            MinimumHeightRequest="60">
+                                            <!--task title-->
+                                            <Label 
+                                                Text="{Binding TaskTitle}" 
+                                                FontAttributes="Bold"
+                                                Margin="2,5,2,0"
+                                                HorizontalOptions="Center"
+                                                TextColor="{StaticResource LableTextColor}"
+                                                FontSize="{StaticResource NormalFontSize}"
+                                                VerticalOptions="Center" />
+                                            <!--Speded time-->
+                                            <Label 
+                                                Text="{Binding SpentTime ,StringFormat='Spent Time: {0}' }"
+                                                HorizontalOptions="Center" 
+                                                HorizontalTextAlignment="Center"
+                                                Margin="2,0,2,0"
+                                                TextColor="{StaticResource LableTextColor}"
+                                                IsVisible="{Binding SpentTime , Converter={StaticResource TimeSpendVisibiltyConverter}}"
+                                                FontSize="{StaticResource MediumFontSize}" />
+                                            <!--start time-->
+                                            <Label 
+                                                Text="{Binding TaskStartedAt, StringFormat='Start Time: {0}'}"
+                                                HorizontalOptions="Center"
+                                                Margin="2,0,2,5"
+                                                TextColor="{StaticResource LableTextColor}"
+                                                FontSize="{StaticResource MediumFontSize}"
+                                                HorizontalTextAlignment="Center" />
+                                        </StackLayout>
+                                        <ViewCell.ContextActions>
+                                            <!--edit  action button-->
+                                            <MenuItem  Clicked="EditTaskContextual_Clicked" Text="Edit"  CommandParameter="{Binding  DayTaskTrackId}" />
+                                            <!--delete  action button-->
+                                            <MenuItem Clicked="DeleteTaskContextual_Clicked" Text="Delete" CommandParameter="{Binding  DayTaskTrackId}"/>
+                                        </ViewCell.ContextActions>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <!-- No data lable-->
+                        <Label 
+                           Text="No Task Found"
+                           IsVisible="{Binding IsShowError}"
+                           HorizontalOptions="CenterAndExpand"
+                           VerticalOptions="CenterAndExpand"
+                           Margin="2,0,2,2"
+                           TextColor="{StaticResource TaskListBgColor}"
+                           FontSize="{StaticResource MediumFontSize}"
+                           HorizontalTextAlignment="Center" />
+                    </StackLayout>
+                </DataTemplate>
+            </cv:CarouselViewControl.ItemTemplate>
+        </cv:CarouselViewControl>
+    </ContentPage.Content>
+</ContentPage>

@@ -41,7 +41,7 @@ namespace TimeTracker.Database
             try
             {
                 database.CreateTable<Taskk>();
-               // database.Query<DayActivity>("CREATE TABLE if not exists `DayActivity` (`Id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,`DayActivityTrackId` TEXT,`TaskTitle` TEXT,`TaskType`    TEXT,`TaskStartedAt` TEXT,`SpentTime` TEXT,`CreatedAt` TEXT,`UpdatedAt` TEXT,`BGColor` TEXT,`IsSelected` INTEGER,`RefTaskTrackId` TEXT);");
+                database.Query<DayActivity>("CREATE TABLE if not exists `DayActivity` (`Id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,`DayTaskTrackId` TEXT,`TaskTitle` TEXT,`TaskType`    TEXT,`TaskStartedAt` TEXT,`SpentTime` TEXT,`CreatedAt` TEXT,`UpdatedAt` TEXT,`BGColor` TEXT,`IsSelected` INTEGER,`RefTaskTrackId` TEXT);");
                 DumpInitialDataInTaskkLocalDB();
             }
             catch (Exception ex)
@@ -278,14 +278,247 @@ namespace TimeTracker.Database
             }
 
         }
-        //public void ABC()
-        //{
-        //    Taskk t = new Taskk();
-        //    // t.CreatedAt
-        //    //t.CreatedAt
-        //    string d = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt");
-        //    DateTime dt = Convert.ToDateTime(d);
-        //    var s = database.Query<Taskk>("SELECT * FROM Taskk WHERE strftime('%m', CreatedAt) IN ('02', '01')");
-        //}
+        ////////////////// Day Task Task////////////////////////////////////
+
+        public string AddDayTask(DayActivity dayTask)
+        {
+            //  string recentAddedEnterdTask = 0; // used it to find the total time used (Spended)by currently running task when user enter the new task
+            try
+            {
+                lock (collisionLock)
+                {
+                    if (dayTask.DayTaskTrackId != null) //update record
+                    {
+                        database.Update(dayTask);
+                        return dayTask.DayTaskTrackId;
+                    }
+                    else
+                    { // enter as new entry
+                        dayTask.DayTaskTrackId = Guid.NewGuid().ToString();
+                        int i = database.Insert(dayTask);
+                        if (i > 0)
+                        {
+                            return dayTask.DayTaskTrackId;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //todo
+                MessagingCenter.Send((App)Xamarin.Forms.Application.Current, AppConstant.ErrorEvent, ex.ToString());
+                return null;
+            }
+        }
+        /// <summary>
+        /// Retrieve the All task from db
+        /// and return back the list of DayTask
+        /// </summary>
+        /// <returns></returns>
+        public List<DayActivity> GetAllDayTasks()
+        {
+            try
+            {
+                lock (collisionLock)
+                {
+
+                    return database.Table<DayActivity>().ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send((App)Xamarin.Forms.Application.Current, AppConstant.ErrorEvent, ex.ToString());
+                return null;
+            }
+        }
+
+        public List<DayActivity> GetAllDayTasksBaseOnDayMonth(string date)
+        {
+
+            try
+            {
+                lock (collisionLock)
+                {
+                    if (date != null)
+                    {
+                        string desireFormattedDate = AppUtil.AppUtil.ChangeDateAccordingToQliteQueryFormate(date);
+                        var result = database.Query<DayActivity>("SELECT * FROM DayActivity WHERE strftime('%Y-%m-%d', CreatedAt) =" + desireFormattedDate);
+                        return result;
+                    }
+
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send((App)Xamarin.Forms.Application.Current, AppConstant.ErrorEvent, ex.ToString());
+                return null;
+            }
+        }
+        public int DeleteAllDayTasksBaseOnDayMonth(string date)
+        {
+
+            try
+            {
+                lock (collisionLock)
+                {
+                    if (date != null)
+                    {
+                        string desireFormattedDate = AppUtil.AppUtil.ChangeDateAccordingToQliteQueryFormate(date);
+                        var result = database.Query<DayActivity>("Delete FROM DayActivity WHERE strftime('%Y-%m-%d', CreatedAt) =" + desireFormattedDate);
+                        return 2;
+                    }
+
+                    return 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send((App)Xamarin.Forms.Application.Current, AppConstant.ErrorEvent, ex.ToString());
+                return 0;
+            }
+        }
+        /// <summary>
+        /// return the latest inserted day task
+        /// </summary>
+        /// <returns></returns>
+        public DayActivity GetLatestInsertedDayTask()
+        {
+            try
+            {
+                return database.Table<DayActivity>().Last();
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send((App)Xamarin.Forms.Application.Current, AppConstant.ErrorEvent, ex.ToString());
+                return null;
+            }
+
+        }
+
+        public DayActivity GetDayTaskByTrackId(string trackId)
+        {
+            try
+            {
+                lock (collisionLock)
+                {
+                    if (trackId != null)
+
+                    {
+                        DayActivity task = database.Table<DayActivity>().First(x => x.DayTaskTrackId == trackId);
+                        return task;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send((App)Xamarin.Forms.Application.Current, AppConstant.ErrorEvent, ex.ToString());
+                return null;
+            }
+        }
+        /// <summary>
+        /// delete task base on task track id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>count of deleted records</returns>
+        public int DeleteDayTaskByTrackId(string id)
+        {
+            int c;
+            try
+            {
+                if (id != null)
+                {
+                    c = database.Table<DayActivity>().Delete(x => x.DayTaskTrackId == id);
+                    return c;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch
+            (Exception ex)
+            {
+                MessagingCenter.Send((App)Xamarin.Forms.Application.Current, AppConstant.ErrorEvent, ex.ToString());
+                return 0;
+            }
+
+        }
+        public int DeleteAllDayTaskOfADate(string date)
+        {
+            int c;
+            try
+            {
+                lock (collisionLock)
+                {
+                    if (date != null)
+                    {
+                        string desireFormattedDate = AppUtil.AppUtil.ChangeDateAccordingToQliteQueryFormate(date);
+                        var r = database.Query<DayActivity>("Delete * FROM DayActivity WHERE strftime('%Y-%m-%d', CreatedAt) =" + desireFormattedDate);
+                        return 3;
+                    }
+
+                    return 0;
+                }
+            }
+            catch
+            (Exception ex)
+            {
+                MessagingCenter.Send((App)Xamarin.Forms.Application.Current, AppConstant.ErrorEvent, ex.ToString());
+                return 0;
+            }
+
+        }
+        /// <summary>
+        /// delete the all task from table
+        /// </summary>
+        /// <returns></returns>
+        public int DeleteAllDayTask()
+        {
+            try
+            {
+                var countOfDeletedRecord = 0;
+                lock (collisionLock)
+                {
+
+                    countOfDeletedRecord = database.DeleteAll<DayActivity>();
+
+                }
+                return countOfDeletedRecord;
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send((App)Xamarin.Forms.Application.Current, AppConstant.ErrorEvent, ex.ToString());
+                return 0;
+            }
+
+        }
+        public int InsertedGroupOfDayTaskk(List<DayActivity> list)
+        {
+            try
+            {
+                lock (collisionLock)
+                {
+                    int recentAddedEnterdTask = 0;
+                    recentAddedEnterdTask = database.InsertAll(list);
+                    return recentAddedEnterdTask;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send((App)Xamarin.Forms.Application.Current, AppConstant.ErrorEvent, ex.ToString());
+                return 0;
+            }
+
+        }
     }
 }

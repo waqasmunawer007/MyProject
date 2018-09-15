@@ -6,6 +6,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using CarouselView.FormsPlugin.Android;
 
 namespace TimeTracker.Droid
 {
@@ -21,6 +22,7 @@ namespace TimeTracker.Droid
             XamForms.Controls.Droid.Calendar.Init();
             global::Xamarin.Forms.Forms.Init(this, bundle);
             Rg.Plugins.Popup.Popup.Init(this, bundle);
+            CarouselViewRenderer.Init();
             LoadApplication(new App());
         }
     }

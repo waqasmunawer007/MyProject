@@ -1,15 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:XamForms.Controls;assembly=XamForms.Controls.Calendar"
              BackgroundColor="White"
              Title="Stats"
              Icon="ic_chart_black_24dp.png"
              x:Class="TimeTracker.Views.StaticsCalenderViewPage">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Stats!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <ScrollView
+            HorizontalOptions="Fill" 
+            VerticalOptions="Fill">
+            <StackLayout 
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill">
+                <controls:Calendar
+                    x:Name="calender"
+                    MultiSelectDates="False"
+                    DisableAllDates="False"
+                    WeekdaysShow="True"
+                    ShowNumberOfWeek="True"
+                    ShowNumOfMonths="1"
+                    EnableTitleMonthYearView="True"
+                    WeekdaysTextColor="Teal"
+                    DateClicked="calender_DateClicked"
+                    StartDay="Monday"
+                    TitleLeftArrowBorderColor="#7986cb"
+                    TitleRightArrowBorderColor="Beige"
+                    SelectedDate="{Binding CurrentSelectedDate}"
+			        DateCommand="{Binding DateChosenForViewTasksCommand}"
+                    SelectedTextColor="Fuchsia">
+                    
+                </controls:Calendar>
+            </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>
