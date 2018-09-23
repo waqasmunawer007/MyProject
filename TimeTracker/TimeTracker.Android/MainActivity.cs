@@ -7,6 +7,7 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using CarouselView.FormsPlugin.Android;
+using SegmentedControl.FormsPlugin.Android;
 
 namespace TimeTracker.Droid
 {
@@ -19,6 +20,7 @@ namespace TimeTracker.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(bundle);
+            SegmentedControlRenderer.Init();
             XamForms.Controls.Droid.Calendar.Init();
             global::Xamarin.Forms.Forms.Init(this, bundle);
             Rg.Plugins.Popup.Popup.Init(this, bundle);

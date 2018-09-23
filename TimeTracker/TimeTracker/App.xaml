@@ -2,6 +2,7 @@
 <Application 
     xmlns="http://xamarin.com/schemas/2014/forms" 
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      xmlns:cv="clr-namespace:CarouselView.FormsPlugin.Abstractions;assembly=CarouselView.FormsPlugin.Abstractions"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     x:Class="TimeTracker.App">
     <Application.Resources>
@@ -20,6 +21,7 @@
             <Color x:Key="TextColorForPicker">#9D9D9D</Color>
             <!--Silver Chalice like gray-->
             <Color x:Key="ViewsBoarderColor">#949494</Color>
+            <Color x:Key="ChartSelectionColor">#8371AD</Color>
             <!--Dusty Gray-->
             <!--App Font Sizes-->
             <x:Double x:Key="SmallFontSize">12</x:Double>
@@ -27,11 +29,27 @@
             <x:Double x:Key="NormalFontSize">18</x:Double>
             <x:Double x:Key="LargeFontSize">20</x:Double>
             <x:Double x:Key="ButtonFontSize">16</x:Double>
+            <Color x:Key="AddCustomTaskBgColor">#F4D362</Color>
+            <Color x:Key="ToolBarColor">#8371AD</Color>
+            <Color x:Key="ChartTickleLAbleColor">#8371AD</Color>
+            <x:Boolean x:Key="IsExplode">False</x:Boolean>
+            <x:Boolean x:Key="IsAnimated">True</x:Boolean>
+            <x:Boolean x:Key="PyramidHeight">420</x:Boolean>
+            <x:Double x:Key="ChartLegendFontSize">12</x:Double>
             <!--Height Sizes-->
             <x:Double x:Key="LargButtonHeight">70</x:Double>
             <Style TargetType="NavigationPage">
                 <Setter Property="BarBackgroundColor" Value="{StaticResource TabBarColor}"/>
                 <Setter Property="BarTextColor" Value="Color.White"/>
+            </Style>
+            <Style TargetType="cv:CarouselViewControl" x:Key="carouselview_blobal_style">
+                <Setter Property="ShowArrows" Value="True"/>
+                <Setter Property="ArrowsTransparency" Value="1"/>
+                <Setter Property="ArrowsTintColor" Value="White"/>
+                <Setter Property="ArrowsBackgroundColor" Value="{StaticResource AddCustomTaskBgColor}"/>
+                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="Orientation" Value="Horizontal"/>
+                <Setter Property="InterPageSpacing" Value="20"/>
             </Style>
         </ResourceDictionary>
     </Application.Resources>

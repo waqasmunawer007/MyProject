@@ -151,7 +151,7 @@ namespace TimeTracker.Views
         private void GraphsToolbarItem_Activated(object sender, EventArgs e)
         {
             // isAnyItemSelected = false;
-           // Navigation.PushAsync(new ChartViewPage(currentDate));
+           Navigation.PushAsync(new ChartViewPage(currentDate));
 
         }
         /// <summary>
@@ -182,7 +182,7 @@ namespace TimeTracker.Views
         {
             var item = ((MenuItem)sender);
             var id = item.CommandParameter.ToString();
-            //await Navigation.PushPopupAsync(new AddDayTaskPopupPageView(id, true));
+            await Navigation.PushPopupAsync(new AddDayTaskPopupPageView(id, true));
 
         }
         /// <summary>

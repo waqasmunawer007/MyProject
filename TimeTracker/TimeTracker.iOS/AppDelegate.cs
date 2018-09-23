@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CarouselView.FormsPlugin.iOS;
 using Foundation;
+using SegmentedControl.FormsPlugin.iOS;
 using UIKit;
 
 namespace TimeTracker.iOS
@@ -26,6 +27,7 @@ namespace TimeTracker.iOS
             XamForms.Controls.iOS.Calendar.Init();
             Rg.Plugins.Popup.Popup.Init();
             CarouselViewRenderer.Init();
+            SegmentedControlRenderer.Init();
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);
