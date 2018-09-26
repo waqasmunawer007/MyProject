@@ -7,8 +7,9 @@ using System.Text;
 using Foundation;
 using SQLite;
 using TimeTracker.Interfaces;
+using TimeTracker.iOS.DependencyServices;
 using UIKit;
-
+[assembly: Xamarin.Forms.Dependency(typeof(DatabaseConnection_iOS))]
 namespace TimeTracker.iOS.DependencyServices
 {
     public class DatabaseConnection_iOS : IDatabaseConnection
