@@ -11,6 +11,7 @@ namespace TimeTracker
     {
         public App()
         {
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("ODgyMUAzMTM2MmUzMjJlMzBqM1hJcFFlUm1YYmNoUlloVzU5bWNWWE5nQjZOWDJ2eFcwNXZicEM3YWFZPQ==");
             InitializeComponent();
             FlowListView.Init();
             DatabaseHelper.GetInstance().CreateDatabase();

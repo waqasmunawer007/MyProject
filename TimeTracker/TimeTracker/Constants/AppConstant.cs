@@ -50,7 +50,6 @@ namespace TimeTracker.Constants
         public static string AtWhichPositionYouWantAddTask = "Where to add task from selected position?";
         public static string AtBottomOfSelectedTask = "Bottom";
         public static string AtAboveOfSelectedTask = "Above";
-        ////
         public static string addCustomProductiveTaskTextTitle = "Add Custom Task";
         public static string addCustomUnProductiveTaskTextTitle = "Add Custom Task";
         public static string addCustomMiscellaneousTaskTextTitle = "Add Custom Task";
@@ -64,6 +63,12 @@ namespace TimeTracker.Constants
         public static string ProductiveChartTitle = "Productive";
         public static string UnProductiveChartTitle = "Unproductive";
         public static string MiscellaneousChartTitle = "Miscellaneous";
+        public static string ProductiveChartTitle_C = "PRODUCTIVE";
+        public static string UnProductiveChartTitle_C = "UNPRODUCTIVE";
+        public static string MiscellaneousChartTitle_C = "MISCELLANEOUS";
+        public static string weeklyDivisionFlag = "weekly";
+        public static string monthlyDivisionFlag = "monthly";
+        public static string dailyDivisionFlag = "daily";
         //TaskType Colors
         public static string ProductiveTaskColor = "#5c6bc0";
         public static string ProductiveSelectiveTaskColor = "#7986cb";
@@ -77,6 +82,8 @@ namespace TimeTracker.Constants
         //Chart Types
         public static string PieChartTypeLable = "Pie View";
         public static string BarChartTypeLable = "Bar View";
+        public static string DoughuntChartTypeLable = "Doughunt View";
+        public static string PayramidChartTypeLable = "Pyramid View";
         //Task stats page
         public static string StatsToolbarAddNewTaskButton = "Add";
         public static string StatsToolbargraphsButton = "Stats";

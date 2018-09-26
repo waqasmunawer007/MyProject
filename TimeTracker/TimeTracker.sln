@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.28010.0
+VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTracker.Android", "TimeTracker.Android\TimeTracker.Android.csproj", "{3A549B89-09BD-474A-A0A3-08F0237763B4}"
 EndProject
@@ -104,6 +104,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {60AF5C1B-C511-4F30-B8DC-60AEF7F1378F}
+		SolutionGuid = {3A72DA34-D490-421D-8CCF-CCC8EEFFE730}
 	EndGlobalSection
 EndGlobal

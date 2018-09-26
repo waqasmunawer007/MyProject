@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TimeTracker.Constants;
 using Xamarin.Forms;
@@ -115,7 +116,7 @@ namespace TimeTracker.AppUtil
         {
             var chartsCategory = new List<string>();
             chartsCategory.Add(Constants.AppConstant.BarChartTypeLable);
-            chartsCategory.Add(Constants.AppConstant.PieChartTypeLable);
+            chartsCategory.Add(Constants.AppConstant.DoughuntChartTypeLable);
 
             return chartsCategory;
         }
@@ -196,6 +197,43 @@ namespace TimeTracker.AppUtil
             weeks.Add("Procasination");
             weeks.Add("Break/Miscellaneous");
             return weeks;
+        }
+        /// <summary>
+        /// weeks list (used at weekly graphs)
+        /// </summary>
+        /// <returns></returns>
+        public static List<string> WeeksList()
+        {
+            var list = new List<string>();
+            list.Add("Week 1");
+            list.Add("Week 2");
+            list.Add("Week 3");
+            list.Add("Week 4");
+            return list;
+        }
+        /// <summary>
+        /// return task type bases on index
+        /// </summary>
+        /// <returns>List<string></returns>
+        public static string TaskType(int index)
+        {
+            return TaskksTypesList().ElementAt(index);
+        }
+        /// <summary>
+        /// return week bases on index
+        /// </summary>
+        /// <returns>List<string></returns>
+        public static string Weeks(int index)
+        {
+            return WeeksList().ElementAt(index);
+        }
+        /// <summary>
+        /// Return the task type index
+        /// </summary>
+        /// <returns>List<string></returns>
+        public static int IndexOfTaskksTypes(string type)
+        {
+            return TaskksTypesList().IndexOf(type);
         }
     }
 }

@@ -1,0 +1,580 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:chart="clr-namespace:Syncfusion.SfChart.XForms;assembly=Syncfusion.SfChart.XForms"
+             xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions"
+             xmlns:vm="clr-namespace:TimeTracker.ViewModels;assembly=TimeTracker"
+             xmlns:cv="clr-namespace:CarouselView.FormsPlugin.Abstractions;assembly=CarouselView.FormsPlugin.Abstractions"
+             xmlns:ui_constants="clr-namespace:TimeTracker.Constants"
+             Title="Stats"
+             xmlns:local="clr-namespace:TimeTracker.Helpers;assembly=TimeTracker"
+             x:Class="TimeTracker.Views.ChartViewPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="dataMarkerTemplate">
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="{Binding Height, StringFormat='{0:N} Hours'}" VerticalOptions="Center" FontSize = "10" TextColor="White"/>
+                </StackLayout>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem 
+            Text="Type" 
+            Name="Charts" 
+            Activated="ChartTypeToolbarItem_Activated"
+            Order="Primary" >
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout
+             Spacing="10" 
+             VerticalOptions="Fill"
+             HorizontalOptions="Fill"
+             Orientation="Vertical">
+            <controls:SegmentedControl
+                 x:Name="SegControl" 
+                 TintColor="{StaticResource AddCustomTaskBgColor}"
+                 SelectedSegment="0"
+                 MinimumHeightRequest="60"
+                 SelectedTextColor="{StaticResource ToolBarColor}" 
+                 ValueChanged="SegControl_ValueChanged"
+                 Margin="10,8,10,8">
+                <controls:SegmentedControl.Children>
+                    <controls:SegmentedControlOption Text="Daily"/>
+                    <controls:SegmentedControlOption Text="Weekly" />
+                    <controls:SegmentedControlOption Text="Monthly" />
+                </controls:SegmentedControl.Children>
+            </controls:SegmentedControl>
+            <!--chart types picker open against the toolbar button-->
+            <Picker 
+                x:Name="ChartTypePicker" 
+                ItemsSource="{Binding ChartTypesList}"
+                HeightRequest="40"
+                IsVisible="False"
+                BackgroundColor="White"
+                SelectedIndexChanged="TypePicker_SelectedIndexChanged"
+                SelectedItem="{Binding SelectedChartType}"  
+                Title="Select Chart View"/>
+            <StackLayout
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="FillAndExpand">
+
+                <!--Daily/monthly bar chart-->
+                <chart:SfChart
+                    x:Name="DailyBarChart" 
+                    HorizontalOptions="FillAndExpand" 
+                    IsVisible="True"
+                    SelectionChanging="DailyBarChart_SelectionChanging"
+                    VerticalOptions="FillAndExpand" >
+                    <chart:SfChart.Title>
+                        <chart:ChartTitle
+                            Text="{Binding CurrentDayDate}" 
+                            TextColor="{StaticResource ToolBarColor}"
+                            FontSize="16" 
+                            FontAttributes="Bold"/>
+                    </chart:SfChart.Title>
+                    <chart:SfChart.PrimaryAxis>
+                        <chart:CategoryAxis 
+                            LabelPlacement="BetweenTicks"
+                            TickPosition="Outside" 
+                            EdgeLabelsDrawingMode="Shift"
+                            LabelRotationAngle="-10">
+                            <chart:CategoryAxis.Title>
+                                <chart:ChartAxisTitle 
+                                    Text="{Binding DailyChartLabel}" 
+                                    
+                                    TextColor="{StaticResource ToolBarColor}"
+                                    FontSize="14"
+                                    FontAttributes="Bold"/>
+                            </chart:CategoryAxis.Title>
+                            <chart:CategoryAxis.LabelStyle>
+                                <chart:ChartAxisLabelStyle 
+                                    TextColor="{StaticResource ChartTickleLAbleColor}"
+                                    FontSize="8"
+                                  ></chart:ChartAxisLabelStyle>
+                            </chart:CategoryAxis.LabelStyle>
+                        </chart:CategoryAxis>
+                    </chart:SfChart.PrimaryAxis>
+                    <chart:SfChart.SecondaryAxis>
+                        <chart:NumericalAxis  RangePadding="Additional" Minimum="0">
+                            <chart:NumericalAxis.Title>
+                                <chart:ChartAxisTitle 
+                                    Text="Hours"  
+                                    
+                                    TextColor="{StaticResource ToolBarColor}"
+                                    FontSize="16"
+                                    FontAttributes="Bold"/>
+                            </chart:NumericalAxis.Title>
+                            <chart:NumericalAxis.LabelStyle>
+                                <chart:ChartAxisLabelStyle 
+                                    TextColor="{StaticResource ChartTickleLAbleColor}"
+                                    FontSize="12"
+                                    ></chart:ChartAxisLabelStyle>
+                            </chart:NumericalAxis.LabelStyle>
+                        </chart:NumericalAxis>
+                    </chart:SfChart.SecondaryAxis>
+                    <chart:SfChart.Series>
+                        <chart:ColumnSeries 
+                                EnableAnimation="{StaticResource IsAnimated}"
+                                ItemsSource="{Binding DailyBarChart}" 
+                                Label="Heights"            
+                                x:Name="DailyBarSeries"                
+                                XBindingPath="Name" 
+                                DataMarkerPosition="Top"
+                                YBindingPath="Height"
+                                EnableDataPointSelection="True"
+                                SelectedDataPointColor="{StaticResource ChartSelectionColor}"
+                                IsVisibleOnLegend="True"
+                                EnableTooltip="True">
+                            <chart:ColumnSeries.DataMarker>
+                                <chart:ChartDataMarker/>
+                            </chart:ColumnSeries.DataMarker>
+                            <chart:ColumnSeries.ColorModel>
+                                <chart:ChartColorModel Palette="Custom" CustomBrushes="{Binding Colors}"/>
+                            </chart:ColumnSeries.ColorModel>
+                        </chart:ColumnSeries>
+                    </chart:SfChart.Series>
+                </chart:SfChart>
+                <!--end Daily bar chart-->
+                <!--daily / monthly Pie Chart-->
+                <chart:SfChart 
+                    x:Name="PieChart"
+                    IsVisible="False"
+                    SelectionChanging="PieChart_SelectionChanging"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand">
+                    <chart:SfChart.Legend >
+                        <chart:ChartLegend OverflowMode="Scroll" >
+                            <chart:ChartLegend.LabelStyle>
+                                <chart:ChartLegendLabelStyle 
+                                  
+                                    FontSize="12" 
+                                    TextColor="{StaticResource ToolBarColor}" />
+                            </chart:ChartLegend.LabelStyle>
+                        </chart:ChartLegend>
+                    </chart:SfChart.Legend>
+                    <chart:SfChart.Title>
+                        <chart:ChartTitle 
+                           
+                            Text="{Binding CurrentDayDate}" 
+                            TextColor="{StaticResource ToolBarColor}" 
+                            FontSize="16"
+                            FontAttributes="Bold"/>
+                    </chart:SfChart.Title>
+                    <chart:PieSeries
+                        x:Name="PieChartSeries"   
+                        ItemsSource ="{Binding DailyPieChartDataList}"
+                        Label="{Binding DailyChartLabel}"   
+                        XBindingPath="Name"
+                        ExplodeOnTouch="{StaticResource IsExplode}"
+                        EnableAnimation="{StaticResource IsAnimated}"
+                        EnableTooltip="True"
+                        TooltipTemplate="{StaticResource dataMarkerTemplate}"
+                        EnableDataPointSelection="True"
+                        SelectedDataPointColor="{StaticResource ChartSelectionColor}"
+                        YBindingPath="Height">
+                        <chart:ColumnSeries.DataMarker>
+                            <chart:ChartDataMarker LabelContent="Percentage"/>
+                        </chart:ColumnSeries.DataMarker>
+                        <chart:ColumnSeries.ColorModel>
+                            <chart:ChartColorModel Palette="Custom"  CustomBrushes="{Binding Colors}"/>
+                        </chart:ColumnSeries.ColorModel>
+                    </chart:PieSeries>
+                </chart:SfChart>
+                <!--End daily pie chart-->
+                <!--daily/monthly doughnut-->
+                <chart:SfChart 
+                    x:Name="DoughnutChart"
+                    IsVisible="False"
+                    SelectionChanging="DoughnutChart_SelectionChanging"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand">
+                    <chart:SfChart.Legend>
+                        <chart:ChartLegend  OverflowMode="Scroll">
+                            <chart:ChartLegend.LabelStyle>
+                                <chart:ChartLegendLabelStyle 
+                                    FontSize="12"
+                                    TextColor="{StaticResource ToolBarColor}"
+                                  />
+                            </chart:ChartLegend.LabelStyle>
+                        </chart:ChartLegend>
+                    </chart:SfChart.Legend>
+                    <chart:SfChart.Title>
+                        <chart:ChartTitle  
+                           
+                            Text=""
+                            TextColor="{StaticResource ToolBarColor}" 
+                            FontSize="16"
+                            FontAttributes="Bold"/>
+                    </chart:SfChart.Title>
+                    <chart:DoughnutSeries
+                        x:Name="DoughuntSeries"
+                        ItemsSource ="{Binding DailyBarChart}"
+                        XBindingPath="Name"
+                        DoughnutCoefficient="0.6"
+                        EnableDataPointSelection="True"
+                        SelectedDataPointColor="{StaticResource ChartSelectionColor}"
+                        ExplodeOnTouch="{StaticResource IsExplode}"
+                        EnableAnimation="{StaticResource IsAnimated}"
+                        TooltipTemplate="{StaticResource dataMarkerTemplate}"
+                        EnableTooltip="True"
+                        YBindingPath="Height">
+                        <chart:DoughnutSeries.DataMarker>
+                            <chart:ChartDataMarker LabelContent="Percentage" >
+                            </chart:ChartDataMarker>
+                        </chart:DoughnutSeries.DataMarker>
+                        <chart:DoughnutSeries.ColorModel>
+                            <chart:ChartColorModel Palette="Custom" CustomBrushes="{Binding Colors}"/>
+                        </chart:DoughnutSeries.ColorModel>
+                    </chart:DoughnutSeries>
+                </chart:SfChart>
+                <!--end daily/monthly doughunt-->
+                <!--daily/monthly payramid-->
+                <chart:SfChart 
+                    x:Name="PayramidChart"
+                    IsVisible="False"
+                    SelectionChanging="PayramidChart_SelectionChanging"
+                    HorizontalOptions="FillAndExpand" 
+                    HeightRequest="430">
+                    <chart:SfChart.Legend>
+                        <chart:ChartLegend  OverflowMode="Scroll">
+                            <chart:ChartLegend.LabelStyle>
+                                <chart:ChartLegendLabelStyle 
+                                    
+                                    FontSize="12" 
+                                    TextColor="{StaticResource ToolBarColor}" />
+                            </chart:ChartLegend.LabelStyle>
+                        </chart:ChartLegend>
+                    </chart:SfChart.Legend>
+                    <chart:SfChart.Title>
+                        <chart:ChartTitle 
+                            
+                            Text="{Binding CurrentDayDate}"
+                            TextColor="{StaticResource ToolBarColor}"
+                            FontSize="16" 
+                            FontAttributes="Bold"/>
+                    </chart:SfChart.Title>
+                    <chart:PyramidSeries
+                        x:Name="PyramidSeries"
+                        Label="{Binding DailyChartLabel}"   
+                        XBindingPath="Name"
+                        EnableDataPointSelection="True"
+                        SelectedDataPointColor="{StaticResource ChartSelectionColor}"
+                        ExplodeOnTouch="{StaticResource IsExplode}"
+                        ItemsSource ="{Binding DailyPieChartDataList}"
+                        EnableTooltip="True"
+                        TooltipTemplate="{StaticResource dataMarkerTemplate}"
+                        YBindingPath="Height">
+                        <chart:PyramidSeries.DataMarker>
+                            <chart:ChartDataMarker 
+                                LabelContent="Percentage" 
+                                ShowMarker="True" 
+                                ShowLabel="True" />
+                        </chart:PyramidSeries.DataMarker>
+                        <chart:PyramidSeries.ColorModel>
+                            <chart:ChartColorModel Palette="Custom" CustomBrushes="{Binding Colors}"/>
+                        </chart:PyramidSeries.ColorModel>
+                    </chart:PyramidSeries>
+                </chart:SfChart>
+                <!--/////////////////////-->
+                <!--Weekly bar chart-->
+                <chart:SfChart 
+                    x:Name="WeekelyBarChart" 
+                    HorizontalOptions="FillAndExpand" 
+                    IsVisible="False"
+                    SelectionChanging="WeekelyBarChart_SelectionChanging"
+                     VerticalOptions="FillAndExpand">
+                    <chart:SfChart.Legend>
+                        <chart:ChartLegend>
+                            <chart:ChartLegend.LabelStyle>
+                                <chart:ChartLegendLabelStyle
+                                    
+                                    FontSize="12"
+                                    TextColor="{StaticResource ToolBarColor}" />
+                            </chart:ChartLegend.LabelStyle>
+                        </chart:ChartLegend>
+                    </chart:SfChart.Legend>
+                    <chart:SfChart.Title>
+                        <chart:ChartTitle 
+                          
+                            Text="{Binding CurrentMonth}"
+                            TextColor="{StaticResource ToolBarColor}" 
+                            FontSize="16"
+                            FontAttributes="Bold"/>
+                    </chart:SfChart.Title>
+                    <chart:SfChart.PrimaryAxis>
+                        <chart:CategoryAxis 
+                            EdgeLabelsDrawingMode="Shift" 
+                            TickPosition="Outside"
+                            LabelPlacement="BetweenTicks"
+                            LabelRotationAngle="-10">
+                            <chart:CategoryAxis.Title>
+                                <chart:ChartAxisTitle 
+                                    
+                                    Text="{Binding WeekelyChartLabel}"
+                                    TextColor="{StaticResource ToolBarColor}"
+                                    FontSize="14"
+                                    FontAttributes="Bold"/>
+                            </chart:CategoryAxis.Title>
+                            <chart:CategoryAxis.LabelStyle>
+                                <chart:ChartAxisLabelStyle 
+                                    TextColor="{StaticResource ChartTickleLAbleColor}"
+                                    FontSize="10"
+                                    ></chart:ChartAxisLabelStyle>
+                            </chart:CategoryAxis.LabelStyle>
+                        </chart:CategoryAxis>
+                    </chart:SfChart.PrimaryAxis>
+                    <chart:SfChart.SecondaryAxis>
+                        <chart:NumericalAxis Minimum="0">
+                            <chart:NumericalAxis.Title>
+                                <chart:ChartAxisTitle 
+                                    Text="Hours"
+                                    
+                                    TextColor="{StaticResource ToolBarColor}"
+                                    FontSize="16"
+                                    FontAttributes="Bold"/>
+                            </chart:NumericalAxis.Title>
+                            <chart:NumericalAxis.LabelStyle>
+                                <chart:ChartAxisLabelStyle 
+                                    TextColor="{StaticResource ChartTickleLAbleColor}"
+                                    FontSize="12"
+                                    ></chart:ChartAxisLabelStyle>
+                            </chart:NumericalAxis.LabelStyle>
+                        </chart:NumericalAxis>
+                    </chart:SfChart.SecondaryAxis>
+                    <chart:SfChart.Series>
+                        <!--Productive Series-->
+                        <chart:StackingColumnSeries 
+                            x:Name="ColumnProductiveSeries"
+                            Color="#8371AD"
+                            Label="{Static ui_constants:AppConstant.ProductiveChartTitle_C}"
+                            ItemsSource ="{Binding wProductiveStackBarChartList}"  
+                            XBindingPath="Name"
+                            IsVisibleOnLegend="True"
+                            EnableDataPointSelection="True"
+                            SelectedDataPointColor="{StaticResource ChartSelectionColor}"   
+						    YBindingPath="Height"
+                            EnableAnimation="{StaticResource IsAnimated}"
+                            EnableTooltip="True"/>
+                        <!--Un Productive Series-->
+                        <chart:StackingColumnSeries 
+                            Color="#eb1923"
+                            Label="{Static ui_constants:AppConstant.UnProductiveChartTitle_C}"
+                            EnableDataPointSelection="True"
+                            SelectedDataPointColor="{StaticResource ChartSelectionColor}"   
+                            x:Name="ColumnUnProductiveSeries"
+                            ItemsSource ="{Binding wUnProductiveStackBarChartList}" 
+                            XBindingPath="Name"
+                            EnableAnimation="{StaticResource IsAnimated}"
+                            IsVisibleOnLegend="True"
+						    YBindingPath="Height"
+                            EnableTooltip="True"/>
+                        <!--Miscellaneous Series-->
+                        <chart:StackingColumnSeries 
+                            Color="#808080"
+                            Label="{Static ui_constants:AppConstant.MiscellaneousChartTitle_C}"
+                            EnableDataPointSelection="True"
+                            SelectedDataPointColor="{StaticResource ChartSelectionColor}"   
+                            x:Name="MiscellaneousSeries"
+                            ItemsSource ="{Binding wMiscellaneousStackBarChartList}"
+                            XBindingPath="Name"
+                            IsVisibleOnLegend="True"
+                            EnableAnimation="{StaticResource IsAnimated}"    
+						    YBindingPath="Height"
+                            EnableTooltip="True"/>
+                    </chart:SfChart.Series>
+                </chart:SfChart>
+                <!--End Weekly bar chart-->
+                <!--weekly Pie Chart-->
+                <StackLayout
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand"
+                        IsVisible="False"
+                        x:Name="WeeklyPieChart">
+                    <cv:CarouselViewControl
+                               ItemsSource="{Binding WeeklyPieCharts}"
+                               VerticalOptions="FillAndExpand"
+                                x:Name="WeeklyPieCarousel"
+                        ShowArrows="True"
+                        ArrowsTransparency="1"
+                        ArrowsTintColor="White"
+                        ArrowsBackgroundColor="{StaticResource AddCustomTaskBgColor}"
+                        BackgroundColor="White"
+                        Orientation="Horizontal"
+                        InterPageSpacing="20">
+                        <cv:CarouselViewControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout 
+                                    Orientation="Vertical" x:Name="MM" >
+                                    <chart:SfChart 
+                                       x:Name="weeklyPie"
+                                        SelectionChanging="weeklyPie_SelectionChanging"
+                                        HorizontalOptions="FillAndExpand" 
+                                        VerticalOptions="FillAndExpand">
+                                        <chart:SfChart.Legend>
+                                            <chart:ChartLegend>
+                                                <chart:ChartLegend.LabelStyle>
+                                                    <chart:ChartLegendLabelStyle FontSize="12" TextColor="{StaticResource ToolBarColor}" />
+                                                </chart:ChartLegend.LabelStyle>
+                                            </chart:ChartLegend>
+                                        </chart:SfChart.Legend>
+                                        <chart:SfChart.Title>
+                                            <chart:ChartTitle Text="{Binding CureentMonth}" TextColor="{StaticResource ToolBarColor}" FontSize="16" FontAttributes="Bold"/>
+                                        </chart:SfChart.Title>
+                                        <chart:PieSeries
+                                          ItemsSource ="{Binding WeeklyPieChart}"
+                                          XBindingPath="Name" 
+                                          Label="{Binding ChartLable}"   
+                                          EnableTooltip="True" 
+                                          EnableDataPointSelection="True"
+                                          SelectedDataPointColor="{StaticResource ChartSelectionColor}"   
+                                          ExplodeOnTouch="{StaticResource IsExplode}"
+                                          EnableAnimation="{StaticResource IsAnimated}"
+                                          TooltipTemplate="{StaticResource dataMarkerTemplate}"  
+                                          YBindingPath="Height">
+                                            <chart:ColumnSeries.DataMarker>
+                                                <chart:ChartDataMarker LabelContent="Percentage"/>
+                                            </chart:ColumnSeries.DataMarker>
+                                            <chart:ColumnSeries.ColorModel>
+                                                <chart:ChartColorModel Palette="Custom" CustomBrushes="{Binding Colors}"/>
+                                            </chart:ColumnSeries.ColorModel>
+                                        </chart:PieSeries>
+                                    </chart:SfChart>
+                                </StackLayout>
+                            </DataTemplate>
+                        </cv:CarouselViewControl.ItemTemplate>
+                    </cv:CarouselViewControl>
+                </StackLayout>
+                <!--End weekly pie chart-->
+                <!--weekly Doughunt-->
+                <StackLayout
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand"
+                        IsVisible="False"
+                        x:Name="WeeklyDoughuntChart">
+                    <cv:CarouselViewControl
+                               x:Name="carousel2"
+                               ItemsSource="{Binding WeeklyPieCharts}"
+                               VerticalOptions="FillAndExpand"
+                               Style="{StaticResource carouselview_blobal_style}">
+                        <cv:CarouselViewControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout 
+                                    Orientation="Vertical">
+                                    <chart:SfChart 
+                                        x:Name="weeklyDoughnutChart"
+                                        IsVisible="True"
+                                        SelectionChanging="weeklyDoughnutChart_SelectionChanging"
+                                        HorizontalOptions="FillAndExpand" 
+                                        VerticalOptions="FillAndExpand">
+                                        <chart:SfChart.Legend>
+                                            <chart:ChartLegend  OverflowMode="Scroll">
+                                                <chart:ChartLegend.LabelStyle>
+                                                    <chart:ChartLegendLabelStyle 
+                                                       
+                                                        FontSize="12" 
+                                                        TextColor="{StaticResource ToolBarColor}" />
+                                                </chart:ChartLegend.LabelStyle>
+                                            </chart:ChartLegend>
+                                        </chart:SfChart.Legend>
+                                        <chart:SfChart.Title>
+                                            <chart:ChartTitle  
+                                                
+                                                Text="{Binding CureentMonth}" 
+                                                TextColor="{StaticResource ToolBarColor}" 
+                                                FontSize="16" 
+                                                FontAttributes="Bold"/>
+                                        </chart:SfChart.Title>
+                                        <chart:DoughnutSeries
+                                        x:Name="DoughuntSeries1"
+                                        ItemsSource ="{Binding WeeklyPieChart}"
+                                        Label="{Binding ChartLable}"   
+                                        XBindingPath="Name"
+                                        EnableDataPointSelection="True"
+                                        SelectedDataPointColor="{StaticResource ChartSelectionColor}"    
+                                        DoughnutCoefficient="0.6"
+                                        ExplodeOnTouch="{StaticResource IsExplode}"
+                                        EnableAnimation="{StaticResource IsAnimated}"    
+                                        EnableTooltip="True"  
+                                        TooltipTemplate="{StaticResource dataMarkerTemplate}"    
+                                        YBindingPath="Height">
+                                            <chart:DoughnutSeries.DataMarker>
+                                                <chart:ChartDataMarker LabelContent="Percentage"/>
+                                            </chart:DoughnutSeries.DataMarker>
+                                            <chart:DoughnutSeries.ColorModel>
+                                                <chart:ChartColorModel Palette="Custom" CustomBrushes="{Binding Colors}"/>
+                                            </chart:DoughnutSeries.ColorModel>
+                                        </chart:DoughnutSeries>
+                                    </chart:SfChart>
+                                </StackLayout>
+                            </DataTemplate>
+                        </cv:CarouselViewControl.ItemTemplate>
+                    </cv:CarouselViewControl>
+                </StackLayout>
+                <!--End weekly doughunt chart-->
+                <!--weekly Pyramid-->
+                <StackLayout
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand"
+                        IsVisible="False"
+                        x:Name="WeeklyPayramidChart">
+                    <cv:CarouselViewControl
+                              ItemsSource="{Binding WeeklyPieCharts}"
+                              VerticalOptions="FillAndExpand"
+                              Style="{StaticResource carouselview_blobal_style}">
+                        <cv:CarouselViewControl.ItemTemplate>
+                            <DataTemplate >
+                                <StackLayout 
+                                    Orientation="Vertical">
+                                    <chart:SfChart 
+                                        IsVisible="True"
+                                        x:Name="WeeklyParyramid"
+                                        SelectionChanging="WeeklyParyramid_SelectionChanging"
+                                        HeightRequest="430"
+                                        HorizontalOptions="FillAndExpand">
+                                        <chart:SfChart.Legend>
+                                            <chart:ChartLegend  OverflowMode="Scroll">
+                                                <chart:ChartLegend.LabelStyle>
+                                                    <chart:ChartLegendLabelStyle
+                                                       
+                                                        FontSize="12" 
+                                                        TextColor="{StaticResource ToolBarColor}" />
+                                                </chart:ChartLegend.LabelStyle>
+                                            </chart:ChartLegend>
+                                        </chart:SfChart.Legend>
+                                        <chart:SfChart.Title>
+                                            <chart:ChartTitle Text="{Binding CureentMonth}" TextColor="{StaticResource ToolBarColor}" FontSize="16" FontAttributes="Bold"/>
+                                        </chart:SfChart.Title>
+                                        <chart:PyramidSeries
+                                        ItemsSource ="{Binding WeeklyPieChart}"
+                                        Label="{Binding ChartLable}"   
+                                        XBindingPath="Name"
+                                        IsVisibleOnLegend="True"
+                                        EnableDataPointSelection="True"
+                                        SelectedDataPointColor="{StaticResource ChartSelectionColor}"    
+                                        ExplodeOnTouch="{StaticResource IsExplode}"
+                                        EnableTooltip="True"
+                                        TooltipTemplate="{StaticResource dataMarkerTemplate}"
+                                        YBindingPath="Height">
+                                            <chart:PyramidSeries.DataMarker>
+                                                <chart:ChartDataMarker 
+                                                    LabelContent="Percentage" 
+                                                    ShowMarker="True"/>
+                                            </chart:PyramidSeries.DataMarker>
+                                            <chart:PyramidSeries.ColorModel>
+                                                <chart:ChartColorModel Palette="Custom" CustomBrushes="{Binding Colors}"/>
+                                            </chart:PyramidSeries.ColorModel>
+                                        </chart:PyramidSeries>
+                                    </chart:SfChart>
+                                </StackLayout>
+                            </DataTemplate>
+                        </cv:CarouselViewControl.ItemTemplate>
+                    </cv:CarouselViewControl>
+                </StackLayout>
+                <!--End weekly doughunt chart-->
+                <!--/////////////////-->
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
